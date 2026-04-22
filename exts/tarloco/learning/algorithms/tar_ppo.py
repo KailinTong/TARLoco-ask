@@ -65,8 +65,12 @@ class PPOTAR(PPO):
             optimizer=optimizer,
         )
 
-        self.num_envs = 4096
+        self.num_envs = None
         self.aux_loss_coef = aux_loss_coef
+
+    def init_storage(self, num_envs, *args, **kwargs):
+        self.num_envs = num_envs
+        super().init_storage(num_envs, *args, **kwargs)
 
     def _compute_auxiliary_loss(self, batch: dict) -> dict:
         """Compute any auxiliary loss. Override this in subclasses if needed."""
@@ -101,6 +105,10 @@ class PPOTAR(PPO):
 
         # Generate next_neg_indices ensuring no multiples of number of environments
         batch_size = next_z_c.size(0) if not self.actor_critic.is_recurrent else next_z_c.size(1)
+        if batch_size < 2:
+            # Cannot form a valid negative sample — skip TAR loss for this mini-batch
+            device = batch["returns"].device
+            return {"tar": torch.tensor(0.0, device=device), "vel_mse": torch.tensor(0.0, device=device)}
         next_neg_indices = self.get_valid_negative_indices(batch, batch_size)
         next_neg_z = (
             next_z_c[next_neg_indices].detach()
