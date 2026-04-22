@@ -200,8 +200,8 @@ class RslRlOnPolicyRunnerCfg:
     resume: bool = False
     """Whether to resume. Default is False."""
 
-    load_run: str = ".*"
-    """The run directory to load. Default is ".*" (all).
+    load_run: str = r"\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}"
+    """The run directory to load. Default matches timestamp-named run directories.
 
     If regex expression, the latest (alphabetical order) matching run will be loaded.
     """
