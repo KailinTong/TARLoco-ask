@@ -6,7 +6,7 @@ from isaaclab.assets import ArticulationCfg
 
 ASK3_USD_PATH = os.path.join(
     os.path.dirname(__file__),
-    "../../../../../assets/ask_3_description/usd/ask_3.usd",
+    "../../../../assets/ask_3_description/usd/ask_3.usd",
 )
 
 ASK3_CFG = ArticulationCfg(
