@@ -149,7 +149,7 @@ class ActorCriticTar(ActorCriticMlpSlrDblEnc):
         obs_tuple = self.extract_critic(critic_observations)
         prop = obs_tuple[1]
         z, vel = self.encode_critic(obs_tuple)
-        critic_obs = torch.cat([z, prop.squeeze(), vel.squeeze()], dim=-1)
+        critic_obs = torch.cat([z.squeeze(1), prop.squeeze(1), vel.squeeze(1)], dim=-1)
         value = self.critic(critic_obs)
         return value
 
@@ -287,7 +287,7 @@ class ActorCriticTarRnn(ActorCriticTar, ActorCriticRnn):
         if masks is not None:
             prop = unpad_trajectories(prop, masks)
             vel = unpad_trajectories(vel, masks) if vel.shape[:-1] != prop.shape[:-1] else vel
-        critic_obs = torch.cat([z, prop.squeeze(), vel.squeeze()], dim=-1)
+        critic_obs = torch.cat([z.squeeze(1), prop.squeeze(1), vel.squeeze(1)], dim=-1)
         value = self.critic(critic_obs)
         return value, hidden_states  # for hidden states
 
