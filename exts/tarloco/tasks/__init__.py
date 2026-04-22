@@ -146,6 +146,17 @@ registry = {
         env_cfg_entry_point=envs.TarMlpNoPrivGo1LocomotionVelocityRoughEnvEvalCfg,
         rsl_rl_cfg_entry_point=agents.Go1RoughPpoTarNoPrivNoVelRunnerCfg,
     ),
+    # ------
+    # ASK-3
+    # ------
+    "ask3-train-tar-rnn-rough": TaskConfig(
+        env_cfg_entry_point=envs.TarAsk3LocomotionVelocityRoughEnvCfg,
+        rsl_rl_cfg_entry_point=agents.Go1RoughRnnTarRunnerCfg,
+    ),
+    "ask3-eval-tar-rnn-rough": TaskConfig(
+        env_cfg_entry_point=envs.TarAsk3LocomotionVelocityRoughEnvEvalCfg,
+        rsl_rl_cfg_entry_point=agents.Go1RoughRnnTarRunnerCfg,
+    ),
 }
 
 
