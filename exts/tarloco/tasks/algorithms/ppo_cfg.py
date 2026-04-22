@@ -206,8 +206,8 @@ class RslRlOnPolicyRunnerCfg:
     If regex expression, the latest (alphabetical order) matching run will be loaded.
     """
 
-    load_checkpoint: str = "model_.*.pt"
-    """The checkpoint file to load. Default is ``"model_.*.pt"`` (all).
+    load_checkpoint: str = r"model_\d+\.pt"
+    """The checkpoint file to load. Default matches numbered checkpoints like model_100.pt.
 
     If regex expression, the latest (alphabetical order) matching file will be loaded.
     """
