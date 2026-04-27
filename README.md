@@ -1,5 +1,14 @@
 # 🐾 TARLoco: Teacher-Aligned Representations via Contrastive Learning for Quadrupedal Locomotion  
 
+> **This fork extends TARLoco with ASK-3 quadruped robot support.**
+> Training results are available on the [W&B Dashboard](https://wandb.ai/kailintong-wb/TAR_workspace).
+>
+> **New tasks:** `ask3-train-tar-rnn-rough` · `ask3-eval-tar-rnn-rough`
+>
+> See the original paper and codebase by [Amr Mousa](https://github.com/ammousa/TARLoco) below.
+
+---
+
 [![TAR Paper](https://img.shields.io/badge/IROS%202025-Paper-9cf.svg)](https://arxiv.org/abs/2503.20839)
 [![W&B Dashboard](https://img.shields.io/badge/WandB-Results-FFBE00?logo=weightsandbiases)](https://wandb.ai/kailintong-wb/TAR_workspace)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
