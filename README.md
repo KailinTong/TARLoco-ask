@@ -1,8 +1,8 @@
-# 🐾 TARLoco: Teacher-Aligned Representations via Contrastivde learning for Quadrupedal Locomotion  
+# 🐾 TARLoco: Teacher-Aligned Representations via Contrastive Learning for Quadrupedal Locomotion  
 
 [![TAR Paper](https://img.shields.io/badge/IROS%202025-Paper-9cf.svg)](https://arxiv.org/abs/2503.20839)
 [![W&B Dashboard](https://img.shields.io/badge/WandB-Results-FFBE00?logo=weightsandbiases)](https://wandb.ai/kailintong-wb/TAR_workspace)
-[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://docs.python.org/3/whatsnew/3.11.html)
+[![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/22.04/)
 [![IsaacLab v2.1.0](https://img.shields.io/badge/IsaacLab-2.1.0-lightgrey.svg)](https://github.com/isaac-sim/IsaacLab)
 [![CC BY-NC-SA 4.0 License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-yellow.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
@@ -18,9 +18,11 @@
 - **Teacher–Student training** with **representation learning via contrastive loss**.
 - High‑fidelity simulation using **Isaac Sim** and streamlined workflows via **Isaac Lab**.
 - **Sim‑to‑Real** deployment on **Unitree Go2** (SDK2 + LCM).
+- Support for multiple robots: **Unitree Go1**, **Unitree Go2**, and **ASK-3**.
 
 ## 🔥 News
 
+- **[27-04-2026]**: ASK-3 robot integrated — tasks `ask3-train-tar-rnn-rough` / `ask3-eval-tar-rnn-rough` now available.
 - **[18-08-2025]**: The [project website](https://amrmousa.com/TARLoco/) with paper, videos, and results is **live**.
 - **[15-06-2025]**: This work is **accepted** at **IROS 2025**. 
 - **[---Soon---]**: Sim2Real module (scripts + pretrained checkpoints) will be added here shortly. Stay tuned!
@@ -92,6 +94,7 @@ We offer a comprehensive suite of tasks for training and evaluation, spanning va
 | **Expert Teacher Policies** | `go1-train-teacher-rough`                 | `go1-eval-teacher-rough`                 |
 |                            | `go1-train-teacher-encoder-rough`         | `go1-eval-teacher-encoder-rough`         |
 |                            | `go1-train-teacher-rnn-rough`             | `go1-eval-teacher-rnn-rough`             |
+| **ASK-3 Robot**            | `ask3-train-tar-rnn-rough`                | `ask3-eval-tar-rnn-rough`                |
 
 Below are examples of how to train and evaluate TARLoco models. You can replace the `--task` argument with any task from the table above to experiment with different configurations.
 
