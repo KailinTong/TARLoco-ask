@@ -1,7 +1,7 @@
 # 🐾 TARLoco: Teacher-Aligned Representations via Contrastivde learning for Quadrupedal Locomotion  
 
 [![TAR Paper](https://img.shields.io/badge/IROS%202025-Paper-9cf.svg)](https://arxiv.org/abs/2503.20839)
-[![W&B Dashboard](https://img.shields.io/badge/WandB-Results-FFBE00?logo=weightsandbiases)](https://wandb.ai/amrmousa-m/TAR_workspace)
+[![W&B Dashboard](https://img.shields.io/badge/WandB-Results-FFBE00?logo=weightsandbiases)](https://wandb.ai/kailintong-wb/TAR_workspace)
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://docs.python.org/3/whatsnew/3.11.html)
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/22.04/)
 [![IsaacLab v2.1.0](https://img.shields.io/badge/IsaacLab-2.1.0-lightgrey.svg)](https://github.com/isaac-sim/IsaacLab)
@@ -116,7 +116,7 @@ python standalone/tarloco/evaluate.py \
 
 ### Results
 
-We host full results on [📊 W&B Dashboard](https://wandb.ai/amrmousa-m/TAR_workspace). Please check our [🌐 project website](https://amrmousa.com/TARLoco) for more details and testing videos.
+We host full results on [📊 W&B Dashboard](https://wandb.ai/kailintong-wb/TAR_workspace). Please check our [🌐 project website](https://amrmousa.com/TARLoco) for more details and testing videos.
 
 
 
