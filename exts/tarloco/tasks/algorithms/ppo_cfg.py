@@ -187,7 +187,7 @@ class RslRlOnPolicyRunnerCfg:
     wandb_project: str = "isaaclab"
     """The wandb project name. Default is "isaaclab"."""
 
-    wandb_entity: str = "amrmousa-m"
+    wandb_entity: str = ""
     """The wandb project name. Default is "isaaclab"."""
 
     note: str = ""

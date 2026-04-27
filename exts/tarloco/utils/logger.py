@@ -345,7 +345,7 @@ class WandbSummaryWriter(SummaryWriter):
 
         experiment_name = getattr(locs["self"], "experiment_name", None)
         project = (experiment_name + "_eval") if experiment_name else locs["self"].cfg["experiment_name"]
-        entity = "amrmousa-m"
+        entity = locs["self"].cfg.get("wandb_entity", "") or None
         args_cli = getattr(locs["self"], "args_cli", None)
         note = getattr(args_cli, "note", "") or locs["self"].cfg.get("note", "") or ""
         note = note.replace("_", " ") if note else ""
