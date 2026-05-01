@@ -397,6 +397,7 @@ class BaseLocomotionVelocityEnvCfg(ManagerBasedRLEnvCfg):
         self.sim.dt = 1 / 200
         self.sim.render_interval = self.decimation
         self.sim.disable_contact_processing = True
+        self.sim.physx.gpu_max_rigid_patch_count = 10 * 2**15
 
         # Dynamically assign the terrain configuration
         self.scene = self.terrain_cfg_class(num_envs=4096, env_spacing=2.5)
