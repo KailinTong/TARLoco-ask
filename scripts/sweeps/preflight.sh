@@ -192,10 +192,12 @@ LOG_DIR="${REPO_ROOT}/logs"
 mkdir -p "${LOG_DIR}"
 AVAIL_GB="$(df -BG --output=avail "${LOG_DIR}" 2>/dev/null | tail -1 | tr -dc '0-9')"
 AVAIL_GB="${AVAIL_GB:-0}"
-if [[ "${AVAIL_GB}" -ge 200 ]]; then
+# Realistic budget: ~12 GB at save_interval=500 (see sweep YAML).
+# Warn under 30 GB, fail under 10 GB.
+if [[ "${AVAIL_GB}" -ge 30 ]]; then
     ok "${AVAIL_GB} GB free under ${LOG_DIR}"
-elif [[ "${AVAIL_GB}" -ge 50 ]]; then
-    warn "${AVAIL_GB} GB free under ${LOG_DIR} — full sweep may need ~200 GB"
+elif [[ "${AVAIL_GB}" -ge 10 ]]; then
+    warn "${AVAIL_GB} GB free under ${LOG_DIR} — sweep needs ~12 GB at save_interval=500"
 else
     bad "${AVAIL_GB} GB free under ${LOG_DIR} — symlink logs/ to scratch first"
 fi
@@ -204,10 +206,14 @@ fi
 # 10. network (api.wandb.ai reachable)
 # --------------------------------------------------------------------
 echo "[network]"
-if curl -sSf --max-time 5 -o /dev/null https://api.wandb.ai 2>/dev/null; then
-    ok "https://api.wandb.ai reachable"
+# Don't use -f: api.wandb.ai/ returns 404 to a bare GET. Any HTTP
+# response means TCP+TLS+server are reachable, which is all we care about.
+HTTP_CODE="$(curl -sS --connect-timeout 5 --max-time 5 -o /dev/null \
+                  -w '%{http_code}' https://api.wandb.ai 2>/dev/null || echo "000")"
+if [[ "${HTTP_CODE}" =~ ^[2-4][0-9][0-9]$ ]]; then
+    ok "https://api.wandb.ai reachable (HTTP ${HTTP_CODE})"
 else
-    warn "api.wandb.ai not reachable — set WANDB_MODE=offline and sync later"
+    warn "api.wandb.ai not reachable (got '${HTTP_CODE}') — set WANDB_MODE=offline and sync later"
 fi
 
 # --------------------------------------------------------------------
