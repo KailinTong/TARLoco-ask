@@ -1,0 +1,91 @@
+# W&B sweep for ASK-3 TAR-RNN rough-terrain hyperparameters.
+#
+# Goal: maximize Train/mean_reward for ASK-3 TAR-RNN training on rough terrain.
+#
+# Usage (from project root):
+#   wandb sweep -e kailintong-wb -p TAR_workspace scripts/sweeps/sweep_ask3_tar_rnn_8192.yaml
+#   CUDA_VISIBLE_DEVICES=0 wandb agent --count 1 kailintong-wb/TAR_workspace/<sweep_id>
+#
+# How params are passed:
+#   ${args_no_hyphens} forwards each parameter as `key=value` (no leading
+#   `--`). train.py uses argparse parse_known_args, so unknown key=value tokens
+#   are forwarded to Hydra as config overrides (e.g. agent.algorithm.lr_max=...).
+
+program: standalone/tarloco/train.py
+method: bayes
+
+metric:
+  name: Train/mean_reward
+  goal: maximize
+
+early_terminate:
+  type: hyperband
+  min_iter: 2000
+  max_iter: 20000
+  s: 2
+  eta: 3
+
+command:
+  - ${env}
+  - python
+  - ${program}
+  - --task=ask3-train-tar-rnn-rough
+  - --headless
+  - --logger=wandb
+  - --max_iterations=20000
+  - --job_type=sweep
+  - --num_envs=16384
+  - agent.save_interval=500
+  - ${args_no_hyphens}
+
+parameters:
+  agent.algorithm.lr_max:
+    distribution: log_uniform_values
+    min: 3.0e-4
+    max: 2.0e-3
+  agent.algorithm.entropy_coef:
+    distribution: log_uniform_values
+    min: 3.0e-3
+    max: 3.0e-2
+  agent.policy.init_noise_std:
+    distribution: uniform
+    min: 0.7
+    max: 1.3
+  agent.algorithm.clip_param:
+    distribution: uniform
+    min: 0.15
+    max: 0.25
+  agent.algorithm.desired_kl:
+    distribution: log_uniform_values
+    min: 5.0e-3
+    max: 2.0e-2
+  agent.algorithm.gamma:
+    values:
+      - 0.99
+      - 0.995
+  agent.algorithm.lam:
+    distribution: uniform
+    min: 0.92
+    max: 0.97
+  agent.algorithm.num_learning_epochs:
+    values:
+      - 4
+      - 5
+      - 6
+  agent.algorithm.num_mini_batches:
+    values:
+      - 4
+      - 8
+  agent.algorithm.max_grad_norm:
+    distribution: uniform
+    min: 0.5
+    max: 1.5
+  agent.num_steps_per_env:
+    values:
+      - 24
+      - 32
+      - 48
+  agent.policy.init_noise_std:
+    distribution: uniform
+    min: 0.7
+    max: 1.3
