@@ -24,7 +24,7 @@ TRIALS_PER_ROUND="${3:-8}"
 CONDA_BASE="$(conda info --base 2>/dev/null || echo "$HOME/miniconda3")"
 # shellcheck disable=SC1091
 source "${CONDA_BASE}/etc/profile.d/conda.sh"
-conda activate tarloco
+conda activate "${TARLOCO_CONDA_ENV:-tar}"
 
 # --- repo root --------------------------------------------------------
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

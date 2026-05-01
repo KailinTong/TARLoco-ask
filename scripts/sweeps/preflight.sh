@@ -37,10 +37,11 @@ CONDA_BASE="$(conda info --base 2>/dev/null || echo "${HOME}/miniconda3")"
 if [[ -f "${CONDA_BASE}/etc/profile.d/conda.sh" ]]; then
     # shellcheck disable=SC1091
     source "${CONDA_BASE}/etc/profile.d/conda.sh"
-    if conda activate tarloco 2>/dev/null; then
-        ok "conda activate tarloco  (python: $(command -v python))"
+    CONDA_ENV="${TARLOCO_CONDA_ENV:-tar}"
+    if conda activate "${CONDA_ENV}" 2>/dev/null; then
+        ok "conda activate ${CONDA_ENV}  (python: $(command -v python))"
     else
-        bad "conda activate tarloco failed"
+        bad "conda activate ${CONDA_ENV} failed"
         echo
         echo "Aborting: cannot activate env."
         exit 1
