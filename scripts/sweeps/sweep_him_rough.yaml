@@ -47,6 +47,9 @@ command:
   - --logger=wandb
   - --max_iterations=20000
   - --job_type=sweep
+  # Disk: default save_interval=100 → 200 ckpts × ~12 MB per full trial.
+  # 500 → 40 ckpts (~480 MB) per full trial. model_best.pt is always kept.
+  - agent.save_interval=500
   - ${args_no_hyphens}
 
 # Search space tightened around HIM defaults
