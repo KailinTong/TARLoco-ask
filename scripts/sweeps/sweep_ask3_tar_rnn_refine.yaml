@@ -1,0 +1,85 @@
+# W&B sweep for ASK-3 TAR-RNN rough-terrain — refined search from best run.
+#
+# Seed run: logs/2026-05-04_05-57-16
+# Goal: maximize Train/mean_reward for ASK-3 TAR-RNN training on rough terrain.
+# num_envs: 4096  (single GPU)
+#
+# Usage (from project root):
+#   wandb sweep -e kailintong-wb -p TAR_workspace scripts/sweeps/sweep_ask3_tar_rnn_refine.yaml
+#   CUDA_VISIBLE_DEVICES=3 wandb agent --count 1 kailintong-wb/TAR_workspace/<sweep_id>
+
+program: standalone/tarloco/train.py
+method: bayes
+
+metric:
+  name: Train/mean_reward
+  goal: maximize
+
+early_terminate:
+  type: hyperband
+  min_iter: 2000
+  max_iter: 20000
+  s: 2
+  eta: 3
+
+command:
+  - ${env}
+  - python
+  - ${program}
+  - --task=ask3-train-tar-rnn-rough
+  - --headless
+  - --logger=wandb
+  - --max_iterations=20000
+  - --job_type=sweep
+  - --num_envs=4096
+  - agent.save_interval=500
+  - ${args_no_hyphens}
+
+# Narrow ranges centred on seed run values.
+# Seed: lr_max=9.77e-4, entropy_coef=7.05e-3, init_noise_std=1.224,
+#       clip_param=0.214, desired_kl=1.34e-2, lam=0.925,
+#       max_grad_norm=1.404, gamma=0.99, epochs=4, mini_batches=8, steps=32
+parameters:
+  agent.algorithm.lr_max:
+    distribution: log_uniform_values
+    min: 5.0e-4
+    max: 2.0e-3
+  agent.algorithm.entropy_coef:
+    distribution: log_uniform_values
+    min: 3.0e-3
+    max: 2.0e-2
+  agent.policy.init_noise_std:
+    distribution: uniform
+    min: 1.0
+    max: 1.5
+  agent.algorithm.clip_param:
+    distribution: uniform
+    min: 0.18
+    max: 0.25
+  agent.algorithm.desired_kl:
+    distribution: log_uniform_values
+    min: 8.0e-3
+    max: 2.0e-2
+  agent.algorithm.gamma:
+    values:
+      - 0.99
+      - 0.995
+  agent.algorithm.lam:
+    distribution: uniform
+    min: 0.90
+    max: 0.95
+  agent.algorithm.num_learning_epochs:
+    values:
+      - 4
+      - 5
+  agent.algorithm.num_mini_batches:
+    values:
+      - 8
+  agent.algorithm.max_grad_norm:
+    distribution: uniform
+    min: 1.0
+    max: 1.8
+  agent.num_steps_per_env:
+    values:
+      - 24
+      - 32

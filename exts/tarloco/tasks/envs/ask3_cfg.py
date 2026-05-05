@@ -1,7 +1,8 @@
 import os
 
 import isaaclab.sim as sim_utils
-from isaaclab.actuators import ImplicitActuatorCfg
+# from isaaclab.actuators import ImplicitActuatorCfg
+from isaaclab.actuators import DCMotorCfg
 from isaaclab.assets import ArticulationCfg
 
 ASK3_USD_PATH = os.path.join(
@@ -42,12 +43,21 @@ ASK3_CFG = ArticulationCfg(
     ),
     soft_joint_pos_limit_factor=0.9,
     actuators={
-        "legs": ImplicitActuatorCfg(
+        # "legs": ImplicitActuatorCfg(
+        #     joint_names_expr=[".*_HAA", ".*_HFE", ".*_KFE"],
+        #     effort_limit=25.0,
+        #     velocity_limit=1000.0,
+        #     stiffness=25.0,
+        #     damping=0.5,
+        # ),
+        "legs": DCMotorCfg(
             joint_names_expr=[".*_HAA", ".*_HFE", ".*_KFE"],
-            effort_limit=25.0,
-            velocity_limit=1000.0,
-            stiffness=25.0,
-            damping=0.5,
+            saturation_effort=25.0,
+            effort_limit=10.0,
+            velocity_limit=25.0,
+            armature=0.00012326191,
+            stiffness=40.0,
+            damping=1.0,
         ),
     },
 )
