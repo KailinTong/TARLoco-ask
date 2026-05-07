@@ -1,0 +1,51 @@
+# One-shot seed run using best known parameters from logs/2026-05-04_05-57-16.
+# Run this ONCE before starting the Bayes sweep agent to pre-populate the
+# Gaussian Process surrogate model with the best known point.
+#
+# Usage (from project root):
+#   wandb sweep -e kailintong-wb -p TAR_workspace scripts/sweeps/sweep_ask3_tar_rnn_seed.yaml
+#   CUDA_VISIBLE_DEVICES=3 wandb agent --count 1 kailintong-wb/TAR_workspace/<seed_sweep_id>
+
+program: standalone/tarloco/train.py
+method: grid
+
+metric:
+  name: Train/mean_reward
+  goal: maximize
+
+command:
+  - ${env}
+  - python
+  - ${program}
+  - --task=ask3-train-tar-rnn-rough
+  - --headless
+  - --logger=wandb
+  - --max_iterations=20000
+  - --job_type=sweep
+  - --num_envs=4096
+  - agent.save_interval=500
+  - ${args_no_hyphens}
+
+parameters:
+  agent.algorithm.lr_max:
+    value: 0.000977
+  agent.algorithm.entropy_coef:
+    value: 0.00705
+  agent.policy.init_noise_std:
+    value: 1.224
+  agent.algorithm.clip_param:
+    value: 0.214
+  agent.algorithm.desired_kl:
+    value: 0.01341
+  agent.algorithm.gamma:
+    value: 0.99
+  agent.algorithm.lam:
+    value: 0.9245
+  agent.algorithm.num_learning_epochs:
+    value: 4
+  agent.algorithm.num_mini_batches:
+    value: 8
+  agent.algorithm.max_grad_norm:
+    value: 1.404
+  agent.num_steps_per_env:
+    value: 32
