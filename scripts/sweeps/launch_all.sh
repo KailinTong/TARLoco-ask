@@ -52,7 +52,7 @@ for ((g = 0; g < NUM_GPUS; g++)); do
             tmux new-window -t "${SESSION}:${WINDOW}" -n "${NAME}" \
                 "${AGENT_SCRIPT} ${g} ${SWEEP_ID} ${TRIALS_PER_ROUND} ${SLOT}"
         fi
-        (( WINDOW++ ))
+        WINDOW=$(( WINDOW + 1 ))
     done
 done
 
