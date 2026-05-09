@@ -14,9 +14,10 @@
 
 set -u
 
-GPU_ID="${1:?usage: launch_agent.sh <gpu_id> <sweep_id> [trials_per_round]}"
-SWEEP_ID="${2:?usage: launch_agent.sh <gpu_id> <sweep_id> [trials_per_round]}"
+GPU_ID="${1:?usage: launch_agent.sh <gpu_id> <sweep_id> [trials_per_round] [slot_id]}"
+SWEEP_ID="${2:?usage: launch_agent.sh <gpu_id> <sweep_id> [trials_per_round] [slot_id]}"
 TRIALS_PER_ROUND="${3:-8}"
+SLOT_ID="${4:-${GPU_ID}}"
 
 # --- env activation ---------------------------------------------------
 # Conda needs `conda activate` to be a function, which only the init
@@ -33,13 +34,13 @@ cd "${REPO_ROOT}"
 # --- logging ----------------------------------------------------------
 LOG_DIR="${REPO_ROOT}/logs/sweeps"
 mkdir -p "${LOG_DIR}"
-LOG_FILE="${LOG_DIR}/agent_gpu${GPU_ID}_$(date +%Y%m%d_%H%M%S).log"
+LOG_FILE="${LOG_DIR}/agent_gpu${SLOT_ID}_$(date +%Y%m%d_%H%M%S).log"
 
 export CUDA_VISIBLE_DEVICES="${GPU_ID}"
-# Pin Isaac Sim / Omniverse caches per-GPU so concurrent agents don't
-# race on the same compile cache directory.
-export OV_CACHE_DIR="${HOME}/.cache/ov_gpu${GPU_ID}"
-export NVIDIA_KERNEL_CACHE_PATH="${HOME}/.cache/nvidia_gpu${GPU_ID}"
+# Pin Isaac Sim / Omniverse caches per-slot so concurrent agents on the
+# same GPU don't race on the same compile cache directory.
+export OV_CACHE_DIR="${HOME}/.cache/ov_gpu${SLOT_ID}"
+export NVIDIA_KERNEL_CACHE_PATH="${HOME}/.cache/nvidia_gpu${SLOT_ID}"
 mkdir -p "${OV_CACHE_DIR}" "${NVIDIA_KERNEL_CACHE_PATH}"
 
 echo "[$(date -Is)] starting agent on GPU ${GPU_ID} for sweep ${SWEEP_ID}" \

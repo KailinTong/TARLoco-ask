@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Launch one W&B sweep agent per GPU inside a detached tmux session.
+# Launch W&B sweep agents across GPUs inside a detached tmux session.
 # The session survives SSH disconnect; reattach with `tmux attach -t sweep`.
 #
 # Usage:
-#   scripts/sweeps/launch_all.sh <sweep_id> [num_gpus] [trials_per_round]
+#   scripts/sweeps/launch_all.sh <sweep_id> [num_gpus] [trials_per_round] [agents_per_gpu]
 #
-# Example:
-#   scripts/sweeps/launch_all.sh kailintong-wb/TAR_workspace/abc123 4 8
+# Examples:
+#   scripts/sweeps/launch_all.sh kailintong-wb/TAR_workspace/abc123 4 8    # 1 agent/GPU
+#   scripts/sweeps/launch_all.sh kailintong-wb/TAR_workspace/abc123 4 4 2  # 2 agents/GPU
 #
 # Common follow-ups:
 #   tmux attach -t sweep            # watch live (Ctrl-b d to detach)
@@ -15,9 +16,10 @@
 
 set -euo pipefail
 
-SWEEP_ID="${1:?usage: launch_all.sh <sweep_id> [num_gpus] [trials_per_round]}"
+SWEEP_ID="${1:?usage: launch_all.sh <sweep_id> [num_gpus] [trials_per_round] [agents_per_gpu]}"
 NUM_GPUS="${2:-4}"
 TRIALS_PER_ROUND="${3:-8}"
+AGENTS_PER_GPU="${4:-1}"
 SESSION="sweep"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -36,16 +38,24 @@ if tmux has-session -t "${SESSION}" 2>/dev/null; then
     exit 1
 fi
 
-# Window 0: GPU 0
-tmux new-session -d -s "${SESSION}" -n "gpu0" \
-    "${AGENT_SCRIPT} 0 ${SWEEP_ID} ${TRIALS_PER_ROUND}"
+TOTAL_AGENTS=$(( NUM_GPUS * AGENTS_PER_GPU ))
+WINDOW=0
 
-# Windows 1..N-1
-for ((i = 1; i < NUM_GPUS; i++)); do
-    tmux new-window -t "${SESSION}:${i}" -n "gpu${i}" \
-        "${AGENT_SCRIPT} ${i} ${SWEEP_ID} ${TRIALS_PER_ROUND}"
+for ((g = 0; g < NUM_GPUS; g++)); do
+    for ((a = 0; a < AGENTS_PER_GPU; a++)); do
+        NAME="gpu${g}_${a}"
+        SLOT="${g}_${a}"
+        if (( WINDOW == 0 )); then
+            tmux new-session -d -s "${SESSION}" -n "${NAME}" \
+                "${AGENT_SCRIPT} ${g} ${SWEEP_ID} ${TRIALS_PER_ROUND} ${SLOT}"
+        else
+            tmux new-window -t "${SESSION}:${WINDOW}" -n "${NAME}" \
+                "${AGENT_SCRIPT} ${g} ${SWEEP_ID} ${TRIALS_PER_ROUND} ${SLOT}"
+        fi
+        (( WINDOW++ ))
+    done
 done
 
-echo "Started ${NUM_GPUS} agents in tmux session '${SESSION}' for ${SWEEP_ID}."
+echo "Started ${TOTAL_AGENTS} agents (${AGENTS_PER_GPU}/GPU × ${NUM_GPUS} GPUs) for ${SWEEP_ID}."
 echo "Attach: tmux attach -t ${SESSION}    (Ctrl-b d to detach, Ctrl-b n/p to switch windows)"
 echo "Logs:   ${REPO_ROOT}/logs/sweeps/"
