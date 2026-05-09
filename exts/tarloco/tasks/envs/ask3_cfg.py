@@ -53,7 +53,7 @@ ASK3_CFG = ArticulationCfg(
         "legs": DCMotorCfg(
             joint_names_expr=[".*_HAA", ".*_HFE", ".*_KFE"],
             saturation_effort=25.0,
-            effort_limit=10.0,
+            effort_limit=25.0,
             velocity_limit=25.0,
             armature=0.00012326191,
             stiffness=40.0,
